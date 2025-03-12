@@ -1,0 +1,65 @@
+#include <Arduino.h>
+#include <ESP32Servo.h>
+
+Servo servo1;  // Tracking (panning) servo
+Servo servo2;  // Fixed camera mount servo
+
+#define SERVO1_PIN D7  // Tracking servo pin
+#define SERVO2_PIN D8  // Fixed camera mount servo pin
+
+// Use floating point values for smooth transitions.
+float currentServo1Angle = 90.0;
+float targetServo1Angle  = 90.0;
+
+unsigned long previousMillis = 0;
+const unsigned long updateInterval = 10; // Update servo position every 10ms.
+const float smoothingFactor = 0.05;        // Smoothing factor for slower, smooth movement.
+
+// Timing for new tracking targets.
+unsigned long lastTargetChange = 0;
+const unsigned long trackingDelay = 5000;  // Delay (ms) between new tracking targets.
+
+void setup() {
+  Serial.begin(115200);
+  
+  servo1.attach(SERVO1_PIN);
+  servo2.attach(SERVO2_PIN);
+  
+  // Initialize positions: servo1 starts at 90° for tracking; servo2 remains centered.
+  servo1.write((int)currentServo1Angle);
+  servo2.write(90);
+  
+  Serial.println("Starting object tracking simulation...");
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+  
+  // Every 'trackingDelay' milliseconds, generate a new random target angle within ±60° of the current servo1 angle.
+  if (currentMillis - lastTargetChange >= trackingDelay) {
+    lastTargetChange = currentMillis;
+    
+    // Calculate the allowed range for the target angle.
+    int currentAngleInt = (int) currentServo1Angle;
+    int minAngle = max(0, currentAngleInt - 60);
+    int maxAngle = min(180, currentAngleInt + 60);
+    
+    // Pick a new random target angle within that range.
+    targetServo1Angle = random(minAngle, maxAngle + 1);
+    Serial.print("New tracking target: ");
+    Serial.println((int)targetServo1Angle);
+  }
+  
+  // Smoothly update servo1's angle toward the target angle.
+  if (currentMillis - previousMillis >= updateInterval) {
+    previousMillis = currentMillis;
+    
+    float diff = targetServo1Angle - currentServo1Angle;
+    if (abs(diff) < 0.1) {
+      currentServo1Angle = targetServo1Angle;
+    } else {
+      currentServo1Angle += diff * smoothingFactor;
+    }
+    servo1.write(round(currentServo1Angle));
+  }
+}
