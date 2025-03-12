@@ -1,0 +1,95 @@
+#include <Arduino.h>
+#include <ESP32Servo.h>
+
+// Create servo objects.
+Servo servo1;  // Horizontal (panning) servo.
+Servo servo2;  // Vertical (tilt) servo.
+
+// Define the GPIO pins for each servo.
+#define SERVO1_PIN D7  // Horizontal servo pin.
+#define SERVO2_PIN D8  // Vertical servo pin.
+
+// Use floating point values for smooth transitions.
+float currentServo1Angle = 90.0;
+float targetServo1Angle  = 90.0;
+
+float currentServo2Angle = 90.0;
+float targetServo2Angle  = 90.0;
+
+// Update interval and smoothing factor for smooth movement.
+unsigned long previousMillis = 0;
+const unsigned long updateInterval = 20;  // Update every 20ms.
+const float smoothingFactor = 0.02;         // Lower factor for slower adjustments.
+
+// Timing for new target updates.
+unsigned long lastTargetChange = 0;
+const unsigned long trackingDelay = 5000;   // New targets every 5000ms (5 seconds).
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Seed the random generator for varied inputs.
+  randomSeed(analogRead(0));
+
+  // Attach servos.
+  servo1.attach(SERVO1_PIN);
+  servo2.attach(SERVO2_PIN);
+  
+  // Initialize positions.
+  servo1.write((int)currentServo1Angle);
+  servo2.write((int)currentServo2Angle);
+  
+  Serial.println("Starting 2-axis smooth tracking simulation with camera inputs...");
+  Serial.println("Horizontal camera input: 0-1600 maps to 0-180°.");
+  Serial.println("Vertical camera input: 0-1200 maps to 0-180°.");
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+  
+  // --- Generate New "Camera Inputs" Every 5 Seconds ---
+  if (currentMillis - lastTargetChange >= trackingDelay) {
+    lastTargetChange = currentMillis;
+    
+    // Simulate a horizontal camera input (0 to 1600).
+    int cameraX = random(0, 1601);
+    // Convert to a servo angle (0 to 180).
+    targetServo1Angle = map(cameraX, 0, 1600, 0, 180);
+    Serial.print("Horizontal camera input: ");
+    Serial.print(cameraX);
+    Serial.print(" -> Target servo angle: ");
+    Serial.println((int)targetServo1Angle);
+    
+    // Simulate a vertical camera input (0 to 1200).
+    int cameraY = random(0, 1201);
+    // Convert to a servo angle (0 to 180).
+    targetServo2Angle = map(cameraY, 0, 1200, 0, 180);
+    Serial.print("Vertical camera input: ");
+    Serial.print(cameraY);
+    Serial.print(" -> Target servo angle: ");
+    Serial.println((int)targetServo2Angle);
+  }
+  
+  // --- Smoothly Update Both Servos ---
+  if (currentMillis - previousMillis >= updateInterval) {
+    previousMillis = currentMillis;
+    
+    // Smooth update for horizontal servo.
+    float diff1 = targetServo1Angle - currentServo1Angle;
+    if (abs(diff1) < 0.1) {
+      currentServo1Angle = targetServo1Angle;
+    } else {
+      currentServo1Angle += diff1 * smoothingFactor;
+    }
+    servo1.write(round(currentServo1Angle));
+    
+    // Smooth update for vertical servo.
+    float diff2 = targetServo2Angle - currentServo2Angle;
+    if (abs(diff2) < 0.1) {
+      currentServo2Angle = targetServo2Angle;
+    } else {
+      currentServo2Angle += diff2 * smoothingFactor;
+    }
+    servo2.write(round(currentServo2Angle));
+  }
+}
