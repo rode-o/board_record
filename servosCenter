@@ -1,0 +1,48 @@
+#include <Arduino.h>
+#include <ESP32Servo.h>
+
+// Create servo objects for each servo.
+Servo servo1;
+Servo servo2;
+
+// Define the GPIO pins that the servo signal wires are connected to.
+#define SERVO1_PIN D7
+#define SERVO2_PIN D8
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Attach each servo to its corresponding pin.
+  servo1.attach(SERVO1_PIN);
+  servo2.attach(SERVO2_PIN);
+  
+  // Optionally, move servos to a starting position (random or a preset value).
+  // Here we set them to random positions between 0 and 50 degrees.
+  servo1.write(random(0, 50));
+  servo2.write(random(0, 50));
+  
+  // Seed the random number generator.
+  randomSeed(analogRead(0));
+  
+  Serial.println("Type 'center' and press Enter to center the servos.");
+}
+
+void loop() {
+  // Check if there is Serial input available.
+  if (Serial.available() > 0) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
+    
+    // If the user enters "center", move the servos to 90 degrees.
+    if (command.equalsIgnoreCase("center")) {
+      servo1.write(90);
+      servo2.write(90);
+      Serial.println("Servos have been centered to 90 degrees.");
+    }
+    else {
+      Serial.print("Unrecognized command: ");
+      Serial.println(command);
+      Serial.println("Type 'center' to center the servos.");
+    }
+  }
+}
