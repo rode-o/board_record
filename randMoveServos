@@ -1,0 +1,41 @@
+#include <Arduino.h>
+#include <ESP32Servo.h>
+
+// Create servo objects for each servo.
+Servo servo1;
+Servo servo2;
+
+// Define the GPIO pins that the servo signal wires are connected to.
+// Change these pin numbers to match your wiring.
+#define SERVO1_PIN D7
+#define SERVO2_PIN D8
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Attach each servo to its corresponding pin.
+  servo1.attach(SERVO1_PIN);
+  servo2.attach(SERVO2_PIN);
+
+  // Seed the random number generator (using an unconnected analog pin helps add randomness).
+  randomSeed(analogRead(0));
+}
+
+void loop() {
+  // Generate random positions from 0 to 180 degrees for each servo.
+  int pos1 = random(0, 50); // random angle for servo1
+  int pos2 = random(0, 50); // random angle for servo2
+
+  // Move the servos to the random positions.
+  servo1.write(pos1);
+  servo2.write(pos2);
+
+  // Output the positions to the Serial Monitor.
+  Serial.print("Servo1: ");
+  Serial.print(pos1);
+  Serial.print("   Servo2: ");
+  Serial.println(pos2);
+
+  // Wait 1 second before moving to new positions.
+  delay(1000);
+}
