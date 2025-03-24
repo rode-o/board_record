@@ -40,8 +40,8 @@ void setup() {
   servo2.write((int)currentServo2Angle);
   
   Serial.println("Starting 2-axis smooth tracking simulation with camera inputs...");
-  Serial.println("Horizontal camera input: 0-1600 maps to 0-180°.");
-  Serial.println("Vertical camera input: 0-1200 maps to 0-180°.");
+  Serial.println("Horizontal camera input (0-1600) maps to 0-180° inverted (left-to-right).");
+  Serial.println("Vertical camera input (0-1200) maps to 0-180° inverted (bottom-to-top).");
 }
 
 void loop() {
@@ -53,8 +53,8 @@ void loop() {
     
     // Simulate a horizontal camera input (0 to 1600).
     int cameraX = random(0, 1601);
-    // Convert to a servo angle (0 to 180).
-    targetServo1Angle = map(cameraX, 0, 1600, 0, 180);
+    // Invert mapping: 0 -> 180°, 1600 -> 0°.
+    targetServo1Angle = map(cameraX, 0, 1600, 180, 0);
     Serial.print("Horizontal camera input: ");
     Serial.print(cameraX);
     Serial.print(" -> Target servo angle: ");
@@ -62,8 +62,8 @@ void loop() {
     
     // Simulate a vertical camera input (0 to 1200).
     int cameraY = random(0, 1201);
-    // Convert to a servo angle (0 to 180).
-    targetServo2Angle = map(cameraY, 0, 1200, 0, 180);
+    // Invert mapping: 0 -> 180°, 1200 -> 0°.
+    targetServo2Angle = map(cameraY, 0, 1200, 180, 0);
     Serial.print("Vertical camera input: ");
     Serial.print(cameraY);
     Serial.print(" -> Target servo angle: ");
