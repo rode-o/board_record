@@ -660,3 +660,10 @@ C:/Users/RodePeters/CODE/board_record/build/esp-idf/servo_control/CMakeFiles/lis
 C:/Users/RodePeters/CODE/board_record/build/esp-idf/servo_control/CMakeFiles/install.dir
 C:/Users/RodePeters/CODE/board_record/build/esp-idf/servo_control/CMakeFiles/install/local.dir
 C:/Users/RodePeters/CODE/board_record/build/esp-idf/servo_control/CMakeFiles/install/strip.dir
+C:/Users/RodePeters/CODE/board_record/build/esp-idf/wifi/CMakeFiles/__idf_wifi.dir
+C:/Users/RodePeters/CODE/board_record/build/esp-idf/wifi/CMakeFiles/edit_cache.dir
+C:/Users/RodePeters/CODE/board_record/build/esp-idf/wifi/CMakeFiles/rebuild_cache.dir
+C:/Users/RodePeters/CODE/board_record/build/esp-idf/wifi/CMakeFiles/list_install_components.dir
+C:/Users/RodePeters/CODE/board_record/build/esp-idf/wifi/CMakeFiles/install.dir
+C:/Users/RodePeters/CODE/board_record/build/esp-idf/wifi/CMakeFiles/install/local.dir
+C:/Users/RodePeters/CODE/board_record/build/esp-idf/wifi/CMakeFiles/install/strip.dir

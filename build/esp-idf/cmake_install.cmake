@@ -427,3 +427,8 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("C:/Users/RodePeters/CODE/board_record/build/esp-idf/servo_control/cmake_install.cmake")
 endif()
 
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("C:/Users/RodePeters/CODE/board_record/build/esp-idf/wifi/cmake_install.cmake")
+endif()
+
